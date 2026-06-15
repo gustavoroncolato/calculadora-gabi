@@ -60,9 +60,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.title("Drogas Vasoativas")
-st.caption("Calculadora de dose · ml/h ↔ mcg/kg/min")
+st.caption("Calculadora de dose · ml/h ↔ mcg/kg/min · UI/h")
 
-# Seleção de droga com nome curto visível
+# Seleção de droga
 drug_name = st.selectbox(
     "Droga",
     list(DRUGS.keys()),
@@ -70,7 +70,7 @@ drug_name = st.selectbox(
 )
 drug_base = DRUGS[drug_name]
 
-# Variante (apenas para drogas que têm mais de uma diluição)
+# Variante (apenas Noradrenalina por enquanto)
 if "variants" in drug_base:
     variant_name = st.radio("Diluição", list(drug_base["variants"].keys()), horizontal=True)
     drug = {**drug_base, **drug_base["variants"][variant_name]}
@@ -82,33 +82,37 @@ st.markdown(f"""
 <div class="preparo-card">
     <b>Preparo:</b> {drug['preparo']}<br>
     <span class="tag">Vol. total: {drug['total_vol_ml']} ml</span>
-    <span class="tag">Concentração: {drug['conc_mcg_ml']:.2f} mcg/ml</span>
+    <span class="tag">Concentração: {drug['conc']:.2f} {drug['unit'].split('/')[0]}/ml</span>
 </div>
 """, unsafe_allow_html=True)
 
 st.divider()
 
 # Direção da conversão
+unit = drug["unit"]
 direction = st.radio(
     "Conversão",
-    ["ml/h  →  mcg/kg/min", "mcg/kg/min  →  ml/h"],
+    [f"ml/h  →  {unit}", f"{unit}  →  ml/h"],
     horizontal=True,
 )
 
-# Peso
-weight = st.number_input(
-    "Peso do paciente (kg)",
-    min_value=1.0,
-    max_value=300.0,
-    value=70.0,
-    step=1.0,
-    format="%.1f",
-)
+# Peso (apenas para drogas peso-dependentes)
+if drug["needs_weight"]:
+    weight = st.number_input(
+        "Peso do paciente (kg)",
+        min_value=1.0,
+        max_value=300.0,
+        value=70.0,
+        step=1.0,
+        format="%.1f",
+    )
+else:
+    weight = None
 
 st.divider()
 
-# Entrada e cálculo
-if direction == "ml/h  →  mcg/kg/min":
+# Cálculo
+if direction == f"ml/h  →  {unit}":
     rate = st.number_input(
         "Taxa da bomba (ml/h)",
         min_value=0.0,
@@ -117,28 +121,37 @@ if direction == "ml/h  →  mcg/kg/min":
         step=0.1,
         format="%.1f",
     )
-    result = (rate * drug["conc_mcg_ml"]) / (weight * 60)
+    if drug["needs_weight"]:
+        result = (rate * drug["conc"]) / (weight * 60)
+    else:
+        result = rate * drug["conc"]
+
     label = "Dose equivalente"
-    value_str = f"{result:.4f}"
-    unit = "mcg/kg/min"
+    value_str = f"{result:.4f}" if drug["needs_weight"] else f"{result:.2f}"
+    result_unit = unit
+
 else:
     dose = st.number_input(
-        "Dose (mcg/kg/min)",
+        f"Dose ({unit})",
         min_value=0.0,
         max_value=9999.0,
         value=drug["dose_default"],
         step=drug["dose_step"],
-        format="%.3f",
+        format="%.3f" if drug["needs_weight"] else "%.1f",
     )
-    result = (dose * weight * 60) / drug["conc_mcg_ml"]
+    if drug["needs_weight"]:
+        result = (dose * weight * 60) / drug["conc"]
+    else:
+        result = dose / drug["conc"]
+
     label = "Taxa da bomba"
     value_str = f"{result:.2f}"
-    unit = "ml/h"
+    result_unit = "ml/h"
 
 st.markdown(f"""
 <div class="result-card">
     <div class="result-label">{label}</div>
     <div class="result-value">{value_str}</div>
-    <div class="result-unit">{unit}</div>
+    <div class="result-unit">{result_unit}</div>
 </div>
 """, unsafe_allow_html=True)
