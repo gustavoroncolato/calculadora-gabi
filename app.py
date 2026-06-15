@@ -155,3 +155,6 @@ st.markdown(f"""
     <div class="result-unit">{result_unit}</div>
 </div>
 """, unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.caption("Desenvolvido por Gustavo Roncolato")
