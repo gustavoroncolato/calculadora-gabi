@@ -31,7 +31,7 @@ DRUGS = {
         "dose_step": 0.5,
     },
     "Nitroprussiato": {
-        "short": "Nipridi",
+        "short": "Nipride",
         "preparo": "1 amp (2ml × 25mg/ml) + 250ml SG 5%",
         "total_vol_ml": 252.0,
         "conc": round(50_000 / 252, 2),   # ≈ 198.41 mcg/ml
