@@ -215,4 +215,15 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("""
+<div style="text-align:center; margin-bottom:8px">
+    <a href="https://gustavoroncolato.github.io/calculadora-gabi/"
+       target="_blank"
+       style="display:inline-block; background:#1a3a5c; color:white;
+              padding:8px 22px; border-radius:20px; text-decoration:none;
+              font-size:14px; font-weight:600;">
+        📲 Instalar versão offline
+    </a>
+</div>
+""", unsafe_allow_html=True)
 st.caption("Desenvolvido por Gustavo Roncolato")

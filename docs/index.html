@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a3a5c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Vasoativas">
+  <title>Drogas Vasoativas</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Drogas Vasoativas</h1>
+  <p>Calculadora de dose · offline</p>
+</header>
+
+<main>
+
+  <!-- Hint iOS -->
+  <div class="install-hint" id="install-hint">
+    📲 <strong>Instalar no iPhone/iPad:</strong> toque em
+    <strong>Compartilhar</strong> → <strong>Adicionar à Tela de Início</strong>
+  </div>
+
+  <!-- Modo -->
+  <div class="card">
+    <span class="field-label">Modo</span>
+    <div class="toggle-group" id="mode-toggle">
+      <button class="toggle active" data-value="padrao">Padrão HR</button>
+      <button class="toggle"        data-value="manual">Cálculo Manual</button>
+    </div>
+  </div>
+
+  <!-- ── Padrão HR ── -->
+  <div id="padrao-section">
+    <div class="card">
+      <label class="field-label" for="drug-select">Droga</label>
+      <select id="drug-select"></select>
+    </div>
+
+    <div class="card" id="variant-card" style="display:none">
+      <span class="field-label">Diluição</span>
+      <div class="toggle-group" id="variant-toggle"></div>
+    </div>
+
+    <div class="preparo-card" id="preparo-card">
+      <div id="preparo-text"></div>
+      <div class="tags" id="preparo-tags"></div>
+    </div>
+  </div>
+
+  <!-- ── Cálculo Manual ── -->
+  <div id="manual-section" style="display:none">
+    <div class="card">
+      <span class="field-label">Configuração da solução</span>
+      <div class="grid-3">
+        <div class="field">
+          <label for="n-amp">Nº ampolas</label>
+          <input type="number" id="n-amp" min="1" max="20" value="2" step="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="conc-amp">Conc./ampola</label>
+          <input type="number" id="conc-amp" min="0.01" value="1" step="0.5" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="drug-unit-amp">Unidade</label>
+          <select id="drug-unit-amp">
+            <option value="mg/ml">mg/ml</option>
+            <option value="UI/ml">UI/ml</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="field">
+          <label for="vol-amp">Vol./ampola (ml)</label>
+          <input type="number" id="vol-amp" min="0.1" value="4" step="0.5" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="vol-diluente">Vol. diluente (ml)</label>
+          <input type="number" id="vol-diluente" min="0" value="92" step="1" inputmode="decimal">
+        </div>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label for="dose-unit-manual">Unidade da dose</label>
+        <select id="dose-unit-manual">
+          <option value="mcg/kg/min">mcg/kg/min</option>
+          <option value="UI/h">UI/h</option>
+          <option value="mcg/min">mcg/min</option>
+        </select>
+      </div>
+    </div>
+    <div class="conc-info" id="manual-conc-info"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Direção -->
+  <div class="card">
+    <span class="field-label">Conversão</span>
+    <div class="toggle-group" id="direction-toggle">
+      <button class="toggle active" data-value="rate_to_dose">ml/h → dose</button>
+      <button class="toggle"        data-value="dose_to_rate">dose → ml/h</button>
+    </div>
+  </div>
+
+  <!-- Peso -->
+  <div class="card" id="weight-card">
+    <div class="field">
+      <label class="field-label" for="weight">Peso do paciente (kg)</label>
+      <input type="number" id="weight" min="1" max="300" value="70" step="1" inputmode="numeric">
+    </div>
+  </div>
+
+  <!-- Input principal -->
+  <div class="card">
+    <div class="field">
+      <label class="field-label" id="input-label">Taxa da bomba (ml/h)</label>
+      <input type="number" id="main-input" min="0" value="5" step="0.1" inputmode="decimal">
+    </div>
+  </div>
+
+  <!-- Resultado -->
+  <div class="result-card">
+    <div class="result-label" id="result-label">Dose equivalente</div>
+    <div class="result-value" id="result-value">—</div>
+    <div class="result-unit"  id="result-unit">mcg/kg/min</div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Desenvolvido por Gustavo Roncolato</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
